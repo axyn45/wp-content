@@ -1,5 +1,4 @@
-jQuery(document).ready(function() {
-
+function initProfile(){
 	jQuery('.um-profile.um-viewing .um-profile-body .um-row').each(function(){
 		var this_row = jQuery(this);
 		if ( this_row.find('.um-field').length == 0 ) {
@@ -137,5 +136,5 @@ jQuery(document).ready(function() {
 	jQuery( '.um-profile-nav a' ).on( 'touchend', function(e) {
 		jQuery( e.currentTarget).trigger( "click" );
 	});
-
-});
+}
+jQuery(document).ready(initProfile());

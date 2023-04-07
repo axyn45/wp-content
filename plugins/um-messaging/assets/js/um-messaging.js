@@ -308,9 +308,7 @@ function um_getCaretPosition(el) {
 
 
 /* End of custom functions */
-
-jQuery(document).ready(function() {
-
+function initMessaging(){
 	jQuery(document.body).on('mouseenter','.um-message-item', function() {
 		jQuery(this).find('.um-message-item-show-on-hover').show();
 	});
@@ -787,4 +785,5 @@ jQuery(document).ready(function() {
 	/* Height of conversation */
 	um_messaging_init_conversations_list();
 	UM_Update_UTC_to_LocalTime();
-});
+}
+jQuery(document).ready(initMessaging());
