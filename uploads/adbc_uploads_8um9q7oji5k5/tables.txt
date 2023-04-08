@@ -1,0 +1,78 @@
+postmeta:w:w
+comments:w:w
+commentmeta:w:w
+usermeta:w:w
+term_relationships:w:w
+posts:w:w
+options:w:w
+links:w:w
+term_taxonomy:w:w
+termmeta:w:w
+terms:w:w
+users:w:w
+signups:w:w
+newsletter:w:w
+um_friends:um-friends:p
+um_notifications:um-friends:p
+um_followers:um-friends:p
+newsletter_sent:newsletter:p
+newsletter_user_logs:newsletter:p
+newsletter_emails:newsletter:p
+newsletter_stats:newsletter:p
+um_metadata:um-verified-users:p
+redirection_logs:redirection:p
+redirection_groups:redirection:p
+redirection_404:redirection:p
+redirection_items:redirection:p
+um_messages:um-notifications:p
+um_conversations:um-messaging:p
+ulike:wp-ulike:p
+bp_activity:wp-ulike:p
+ulike_activities:wp-ulike:p
+ulike_forums:wp-ulike:p
+ulike_comments:wp-ulike:p
+ulike_meta:wp-ulike:p
+bp_notifications:wp-ulike:p
+hermit:Hermit-X-master:p
+hermit_cat:Hermit-X-master:p
+actionscheduler_actions:wp-mail-smtp-pro:p
+actionscheduler_groups:wp-mail-smtp-pro:p
+wpmailsmtp_tasks_meta:wp-mail-smtp-pro:p
+wpmailsmtp_debug_events:wp-mail-smtp-pro:p
+wpmailsmtp_email_attachments:wp-mail-smtp-pro:p
+wpmailsmtp_attachment_files:wp-mail-smtp-pro:p
+wpmailsmtp_emails_log:wp-mail-smtp-pro:p
+wpmailsmtp_email_tracking_events:wp-mail-smtp-pro:p
+wpmailsmtp_email_tracking_links:wp-mail-smtp-pro:p
+actionscheduler_claims:wp-mail-smtp-pro:p
+actionscheduler_logs:wp-mail-smtp-pro:p
+litespeed_url:litespeed-cache:p
+litespeed_url_file:litespeed-cache:p
+sakurairo:Sakurairo-Alex:t
+bp_xprofile_meta:o:o
+bp_optouts:Sakurairo-Alex (60%):t
+bp_groups:wp-ulike (88.89%):p
+bp_groups_members:wp-ulike (47.06%):p
+bp_groups_groupmeta:wp-ulike (42.11%):p
+bm_message_messages:o:o
+bp_friends:user-role-editor (40%):p
+bp_xprofile_fields:ultimate-member (77.78%):p
+bp_messages_meta:o:o
+bm_moderation: (84.62%):w
+bm_message_recipients:o:o
+bp_messages_notices:o:o
+bp_messages_recipients:o:o
+bm_thread_meta:o:o
+bp_user_blogs:user-role-editor (61.54%):p
+bp_xprofile_groups:o:o
+bp_xprofile_data:o:o
+bp_notifications_meta:wp-ulike (80.95%):p
+wpforms_tasks_meta:wp-mail-smtp-pro (44.44%):p
+bm_threads:wp-mail-smtp-pro (90%):p
+bm_mentions:litespeed-cache (36.36%):p
+bp_messages_messages:o:o
+bp_activity_meta:wp-ulike (75%):p
+fsmpt_email_logs:fluent-smtp (37.5%):p
+bp_invitations: (35.71%):w
+bp_user_blogs_blogmeta:user-role-editor (36.36%):p
+bm_message_meta:fluent-smtp (86.67%):p
