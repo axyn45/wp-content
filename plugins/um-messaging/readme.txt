@@ -4,9 +4,9 @@ Plugin URI: https://ultimatemember.com/extensions/private-messages/
 Contributors: ultimatemember, champsupertramp, nsinelnikov
 Donate link:
 Tags: private messaging, email, user, community
-Requires at least: 5.0
-Tested up to: 5.7
-Stable tag: 2.3.0
+Requires at least: 5.1
+Tested up to: 6.0
+Stable tag: 2.3.3
 License: GNU Version 2 or Any Later Version
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 Requires UM core at least: 2.1.0
@@ -60,6 +60,26 @@ Got a problem or need help with Ultimate Member? Head over to our [documentation
 == Changelog ==
 
 = Important: 2.1.7+ version is compatible with UM: Online 2.0.5+ version =
+
+= 2.3.3: August 17, 2022 =
+
+* Added: Refresh new real-time notifications on async query when conversation is refreshed
+
+= 2.3.2: February 9, 2022 =
+
+* Added: 'Hide a "Download Chats History" link' setting.
+* Fixed: setCaretPosition when paste emoji in the message textarea
+* Fixed: Extension settings structure
+* Deprecated: user_id attribute for [ultimatemember_messages] shortcode. Messaging conversations list is displayed only for the current logged in user
+
+= 2.3.1: December 20, 2021 =
+
+* Added: Filter `um_messaging_get_messages_limit` for getting more than 1000 messages in 1 conversation via customization
+* Added: Restriction settings for role who can start conversation/reply. There is possible to everyone or selected roles.
+* Fixed: Multisite installation and tables creating when the plugin is active on the single site or network
+
+* Templates required update:
+  - conversation.php
 
 = 2.3.0: March 29, 2021 =
 

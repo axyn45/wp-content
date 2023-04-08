@@ -17,10 +17,9 @@ function um_followers_settings( $settings ) {
 		'version'   => um_followers_version,
 	);
 
-	$key = ! empty( $settings['extensions']['sections'] ) ? 'followers' : '';
-	$settings['extensions']['sections'][$key] = array(
-		'title'     => __( 'Followers', 'um-followers' ),
-		'fields'    => array(
+	$settings['extensions']['sections']['followers'] = array(
+		'title'  => __( 'Followers', 'um-followers' ),
+		'fields' => array(
 			array(
 				'id'    => 'followers_show_stats',
 				'type'  => 'checkbox',
@@ -32,12 +31,12 @@ function um_followers_settings( $settings ) {
 				'label' => __( 'Show follow button in member directory', 'um-followers' ),
 			),
 			array(
-				'id'        => 'followers_allow_admin_to_follow',
-				'type'      => 'checkbox',
-				'label'     => __( 'Allow Administrators to follow users', 'um-followers' ),
-				'tooltip'   => __( 'Displays Follow buttons in profiles & member directory', 'um-followers' ),
-			)
-		)
+				'id'      => 'followers_allow_admin_to_follow',
+				'type'    => 'checkbox',
+				'label'   => __( 'Allow Administrators to follow users', 'um-followers' ),
+				'tooltip' => __( 'Displays Follow buttons in profiles & member directory', 'um-followers' ),
+			),
+		),
 	);
 
 	return $settings;
@@ -53,19 +52,21 @@ add_filter( 'um_settings_structure', 'um_followers_settings', 10, 1 );
  * @return mixed
  */
 function um_followers_activity_settings( $settings, $key ) {
-
-	$settings['extensions']['sections'][ $key ]['fields'] = array_merge( $settings['extensions']['sections'][ $key ]['fields'], array(
+	$settings['extensions']['sections'][ $key ]['fields'] = array_merge(
+		$settings['extensions']['sections'][ $key ]['fields'],
 		array(
-			'id'    => 'activity_followers_mention',
-			'type'  => 'checkbox',
-			'label' => __( 'Enable integration with followers to convert user names to user profile links automatically (mention users)?', 'um-followers' ),
-		),
-		array(
-			'id'    => 'activity_followed_users',
-			'type'  => 'checkbox',
-			'label' => __( 'Show only followed users activity in the social wall', 'um-followers' ),
+			array(
+				'id'    => 'activity_followers_mention',
+				'type'  => 'checkbox',
+				'label' => __( 'Enable integration with followers to convert user names to user profile links automatically (mention users)?', 'um-followers' ),
+			),
+			array(
+				'id'    => 'activity_followed_users',
+				'type'  => 'checkbox',
+				'label' => __( 'Show only followed users activity in the social wall', 'um-followers' ),
+			),
 		)
-	) );
+	);
 
 	return $settings;
 }

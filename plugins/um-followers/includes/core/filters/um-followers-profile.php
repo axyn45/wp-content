@@ -307,3 +307,78 @@ function um_followers_can_message_restrict( $restrict, $who_can_pm, $recipient )
 	return $restrict;
 }
 add_filter( 'um_messaging_can_message_restrict', 'um_followers_can_message_restrict', 10, 3 );
+
+
+/**
+ * Add options for profile tabs' privacy
+ *
+ * @param array $options
+ *
+ * @return array
+ */
+function um_followers_profile_tabs_privacy_options( $options ) {
+	$options[6] = __( 'Only followers', 'um-followers' );
+
+	// check if there is 'only friends' option
+	if ( isset( $options[7] ) ) {
+		$options[8] = __( 'Only friends and followers', 'um-followers' );
+	}
+
+	return $options;
+}
+add_filter( 'um_profile_tabs_privacy_list', 'um_followers_profile_tabs_privacy_options', 10, 1 );
+
+
+/**
+ * Show profile tab only for friends
+ *
+ * @param bool $can_view
+ * @param int $privacy
+ * @param string $tab
+ * @param array $tab_data
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function um_followers_can_view_profile_tab( $can_view, $privacy, $tab, $tab_data, $user_id ) {
+	if ( ! in_array( $privacy, [ 6, 8 ] ) ) {
+		return $can_view;
+	}
+
+	if ( ! is_user_logged_in() ) {
+		$can_view = false;
+	} else {
+		if ( get_current_user_id() == $user_id ) {
+			$can_view = false;
+		} else {
+			if ( ! UM()->Followers_API()->api()->followed( $user_id, get_current_user_id() ) ) {
+				$can_view = apply_filters( 'um_followers_profile_tab_not_follower_maybe_other', false, $privacy, $user_id );
+			}
+		}
+	}
+
+	return $can_view;
+}
+add_filter( 'um_profile_menu_can_view_tab', 'um_followers_can_view_profile_tab', 10, 5 );
+
+
+/**
+ * Show profile tab 'only for friends and followers',
+ * case if not friend maybe follower
+ *
+ * @param bool $can_view
+ * @param int $privacy
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function um_followers_profile_tab_not_friend_maybe_other( $can_view, $privacy, $user_id ) {
+	if ( $privacy == 8 ) {
+		if ( UM()->Followers_API()->api()->followed( $user_id, get_current_user_id() ) ) {
+			$can_view = true;
+		}
+	}
+
+	return $can_view;
+}
+add_filter( 'um_friends_profile_tab_not_friend_maybe_other', 'um_followers_profile_tab_not_friend_maybe_other', 10, 3 );

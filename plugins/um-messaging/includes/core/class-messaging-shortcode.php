@@ -25,23 +25,16 @@ class Messaging_Shortcode {
 	/**
 	 * Conversations list shortcode
 	 *
-	 * @param array $args
-	 *
 	 * @return string
 	 */
-	function ultimatemember_messages( $args = array() ) {
+	function ultimatemember_messages() {
 		wp_enqueue_script( 'um-messaging' );
 		wp_enqueue_style( 'um-messaging' );
 
-		$defaults = array(
-			'user_id' => get_current_user_id()
-		);
-		$args = wp_parse_args( $args, $defaults );
-
-		/**
-		 * @var $user_id
-		 */
-		extract( $args );
+		$user_id = get_current_user_id();
+		if ( empty( $user_id ) ) {
+			return '';
+		}
 
 		$conversations = UM()->Messaging_API()->api()->get_conversations( $user_id );
 
@@ -50,7 +43,7 @@ class Messaging_Shortcode {
 
 			foreach ( $conversations as $conversation ) {
 
-				if ( $conversation->user_a == um_profile_id() ) {
+				if ( $user_id === (int) $conversation->user_a ) {
 					$user = $conversation->user_b;
 				} else {
 					$user = $conversation->user_a;
@@ -72,21 +65,24 @@ class Messaging_Shortcode {
 			$conversations = array();
 		}
 
+		$t_args = array(
+			'user_id'       => $user_id,
+			'conversations' => $conversations,
+		);
 
 		if ( isset( $_GET['conversation_id'] ) ) {
-			if ( absint( sanitize_key( $_GET['conversation_id'] ) ) ) {
+			$c_id = absint( $_GET['conversation_id'] );
+			if ( $c_id ) {
 				foreach ( $conversations as $conversation ) {
-					if ( $conversation->conversation_id == sanitize_key( $_GET['conversation_id'] ) ) {
-						$args = array_merge( $args, array( 'current_conversation' => absint( sanitize_key( $_GET['conversation_id'] ) ) ) );
+					if ( (int) $conversation->conversation_id === $c_id ) {
+						$t_args = array_merge( $t_args, array( 'current_conversation' => $c_id ) );
 						continue;
 					}
 				}
 			}
 		}
 
-		$args = array_merge( $args, array( 'conversations' => $conversations ) );
-
-		$output = UM()->get_template( 'conversations.php', um_messaging_plugin, $args );
+		$output = UM()->get_template( 'conversations.php', um_messaging_plugin, $t_args );
 
 		return $output;
 	}

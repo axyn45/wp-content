@@ -16,10 +16,9 @@ function um_friends_settings( $settings ) {
 		'version'   => um_friends_version,
 	);
 
-	$key = ! empty( $settings['extensions']['sections'] ) ? 'friends' : '';
-	$settings['extensions']['sections'][$key] = array(
-		'title'     => __( 'Friends', 'um-friends' ),
-		'fields'    => array(
+	$settings['extensions']['sections']['friends'] = array(
+		'title'  => __( 'Friends', 'um-friends' ),
+		'fields' => array(
 			array(
 				'id'    => 'friends_show_stats',
 				'type'  => 'checkbox',
@@ -29,7 +28,7 @@ function um_friends_settings( $settings ) {
 				'id'    => 'friends_show_button',
 				'type'  => 'checkbox',
 				'label' => __( 'Show friend button in member directory', 'um-friends' ),
-			)
+			),
 		)
 	);
 
@@ -45,18 +44,21 @@ add_filter( 'um_settings_structure', 'um_friends_settings', 10, 1 );
  * @return mixed
  */
 function um_friends_activity_settings( $settings, $key ) {
-	$settings['extensions']['sections'][ $key ]['fields'] = array_merge($settings['extensions']['sections'][ $key ]['fields'], array(
+	$settings['extensions']['sections'][ $key ]['fields'] = array_merge(
+		$settings['extensions']['sections'][ $key ]['fields'],
 		array(
-			'id'    => 'activity_friends_mention',
-			'type'  => 'checkbox',
-			'label' => __( 'Enable integration with friends to convert user names to user profile links automatically (mention users)?', 'um-friends' ),
-		),
-		array(
-			'id'    => 'activity_friends_users',
-			'type'  => 'checkbox',
-			'label' => __( 'Show only friends activity in the social wall', 'um-friends' ),
+			array(
+				'id'    => 'activity_friends_mention',
+				'type'  => 'checkbox',
+				'label' => __( 'Enable integration with friends to convert user names to user profile links automatically (mention users)?', 'um-friends' ),
+			),
+			array(
+				'id'    => 'activity_friends_users',
+				'type'  => 'checkbox',
+				'label' => __( 'Show only friends activity in the social wall', 'um-friends' ),
+			),
 		)
-	) );
+	);
 
 	return $settings;
 }

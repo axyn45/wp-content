@@ -2,9 +2,9 @@ um_friends_ajax = false;
 
 jQuery( document ).ready(function() {
 	if ( jQuery('.um-friends-m').length ) {
-		
+
 		jQuery('.um-friends-m').each( function(){
-			
+
 			var max = jQuery(this).attr('data-max');
 			if ( max > 0 && jQuery(this).find('.um-friends-m-user').length > max ) {
 				var n = max - 1;
@@ -12,7 +12,7 @@ jQuery( document ).ready(function() {
 				var more = jQuery(this).find('.um-friends-m-user').length - jQuery(this).find('.um-friends-m-user:visible').length;
 				jQuery('<div class="um-friends-m-user show-all">+'+ more + '</div>').insertAfter( jQuery(this).find('.um-friends-m-user:visible:last') );
 			}
-			
+
 		});
 
 		jQuery( document.body ).on( 'click', '.um-friends-m-user.show-all', function(e){
@@ -60,7 +60,7 @@ jQuery( document ).ready(function() {
 	jQuery( document.body ).on( 'click', '.um-friend-btn', function(e) {
 		e.preventDefault();
 		if ( um_friends_ajax ) {
-			return false; 
+			return false;
 		}
 
 		um_friends_ajax = true;
@@ -76,6 +76,9 @@ jQuery( document ).ready(function() {
 			success: function( response ) {
 				btn.replaceWith( response.btn );
 				um_friends_ajax = false;
+				if ( jQuery('.um-profile').length ) {
+					jQuery('.um-profile-friends-requests-sent').html(response.requests_sent);
+				}
 			},
 			error: function( e ) {
 				console.log( e );
@@ -107,6 +110,9 @@ jQuery( document ).ready(function() {
 			success: function( response ) {
 				btn.replaceWith( response.btn );
 				um_friends_ajax = false;
+				if ( jQuery('.um-profile').length ) {
+					jQuery('.um-profile-friends').html(response.friends);
+				}
 			},
 			error: function( e ) {
 				console.log( e );
@@ -149,6 +155,14 @@ jQuery( document ).ready(function() {
 				} else {
 					btn.replaceWith( response.btn );
 					btn2.remove();
+					if ( jQuery('.um-profile').length ) {
+						jQuery('.um-profile-friends, .um-profile-nav-friends .um-tab-notifier').html(response.friends)
+						jQuery('.um-profile-friends-requests').html(response.received)
+						if (response.received === 0) {
+							jQuery('.um-profile-nav-friends .um-tab-notifier').remove();
+							jQuery('.um-profile-friends-requests').removeClass('um-friends-notf');
+						}
+					}
 				}
 
 				um_friends_ajax = false;
@@ -193,6 +207,14 @@ jQuery( document ).ready(function() {
 				} else {
 					btn.replaceWith( response.btn );
 					btn2.remove();
+					if ( jQuery('.um-profile').length ) {
+						jQuery('.um-profile-friends').html(response.friends)
+						jQuery('.um-profile-friends-requests').html(response.received)
+						if (response.received === 0) {
+							jQuery('.um-profile-nav-friends .um-tab-notifier').remove();
+							jQuery('.um-profile-friends-requests').removeClass('um-friends-notf');
+						}
+					}
 				}
 
 				um_friends_ajax = false;
@@ -231,6 +253,9 @@ jQuery( document ).ready(function() {
 			success: function( response ) {
 				btn.replaceWith( response.btn );
 				um_friends_ajax = false;
+				if ( jQuery('.um-profile').length ) {
+					jQuery('.um-profile-friends-requests-sent').html(response.requests_sent);
+				}
 			},
 			error: function( e ) {
 				console.log( e );

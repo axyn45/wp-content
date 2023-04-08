@@ -634,6 +634,9 @@ class Messaging_Main_API {
 		$hidden_conversations = get_user_meta( $user2, '_hidden_conversations', true );
 		$hidden_conversations = ! empty( $hidden_conversations ) ? $hidden_conversations : array();
 
+		$limit = apply_filters( 'um_messaging_get_messages_limit', 1000, $conversation_id );
+		$limit = absint( $limit );
+
 		$loop_user = um_user( 'ID' );
 		um_fetch_user( $user2 );
 
@@ -668,10 +671,11 @@ class Messaging_Main_API {
 								  author = %d AND
 								  message_id < %d
 							ORDER BY time ASC
-							LIMIT 1000",
+							LIMIT %d;",
 							$conversation_id,
 							$user2,
-							$first_answer_id
+							$first_answer_id,
+							$limit
 						) );
 
 					} else {
@@ -681,9 +685,10 @@ class Messaging_Main_API {
 							WHERE conversation_id = %d AND
 								  author = %d
 							ORDER BY time ASC
-							LIMIT 1000",
+							LIMIT %d;",
 							$conversation_id,
-							$user2
+							$user2,
+							$limit
 						) );
 
 					}
@@ -708,8 +713,10 @@ class Messaging_Main_API {
 						"SELECT *
 						FROM {$wpdb->prefix}um_messages
 						WHERE conversation_id = %d
-						ORDER BY time ASC LIMIT 1000",
-						$conversation_id
+						ORDER BY time ASC
+						LIMIT %d;",
+						$conversation_id,
+						$limit
 					) );
 					wp_cache_set( "um_conversation_messages_limit:$conversation_id", $messages, 'um_messaging' );
 				}
@@ -1183,7 +1190,7 @@ class Messaging_Main_API {
 
 		$other_user_hidden_conversations = get_user_meta( $other_user, '_hidden_conversations', true );
 
-		if ( in_array( $conversation->conversation_id, $other_user_hidden_conversations ) ) {
+		if ( is_array( $other_user_hidden_conversations ) && in_array( $conversation->conversation_id, $other_user_hidden_conversations ) ) {
 			$wpdb->query( $wpdb->prepare(
 				"DELETE
 				FROM {$wpdb->prefix}um_conversations
@@ -1420,6 +1427,16 @@ class Messaging_Main_API {
 					$output['message_id'] = $message->message_id;
 					$output['last_updated'] = $message->time;
 				}
+				/**
+				 * Fires after updating conversation.
+				 *
+				 * @since 2.3.3
+				 * @hook um_ajax_messaging_after_update
+				 *
+				 * @param {int} $user_id current User ID.
+				 * @param {int} $conversation_id Conversation ID.
+				 */
+				do_action( 'um_ajax_messaging_after_update', get_current_user_id(), $conversation_id );
 
 				$output['response'] = $response;
 			} else {

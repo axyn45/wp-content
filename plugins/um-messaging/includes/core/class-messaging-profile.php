@@ -129,9 +129,9 @@ class Messaging_Profile {
 	 */
 	function content_messages_default( $args ) {
 		if ( version_compare( get_bloginfo( 'version' ),'5.4', '<' ) ) {
-			echo do_shortcode( '[ultimatemember_messages user_id="' . um_profile_id() . '" /]' );
+			echo do_shortcode( '[ultimatemember_messages /]' );
 		} else {
-			echo apply_shortcodes( '[ultimatemember_messages user_id="' . um_profile_id() . '" /]' );
+			echo apply_shortcodes( '[ultimatemember_messages /]' );
 		}
 	}
 

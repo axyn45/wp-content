@@ -2,7 +2,7 @@
 namespace um_ext\um_messaging\core;
 
 
-if ( !defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 /**
@@ -24,35 +24,36 @@ class Messaging_Setup {
 	public function __construct() {
 		//settings defaults
 		$this->settings_defaults = array(
-			'show_pm_button'                => 1,
-			'profile_tab_messages'          => 1,
-			'pm_unread_first'               => 0,
-			'pm_char_limit'                 => 200,
-			'pm_block_users'                => '',
-			'pm_active_color'               => '#0085ba',
-			'pm_coversation_refresh_timer'  => 5,
-			'pm_notify_period'              => 86400,
-			'pm_remind_period'              => 3,
-			'pm_remind_limit'               => 1,
-			'new_message_on'                => 1,
-			'new_message_sub'               => '{sender} has messaged you on {site_name}!',
-			'new_message'                   => 'Hi {recipient},<br /><br />' .
-			                                   '{sender} has just sent you a new private message on {site_name}.<br /><br />' .
-			                                   'To view your new message(s) click the following link:<br />' .
-			                                   '{message_history}<br /><br />' .
-			                                   'This is an automated notification from {site_name}. You do not need to reply.',
-			'new_message_reminder_on'       => 0,
-			'new_message_reminder_sub'      => 'You have unread message from {sender} on {site_name}!',
-			'new_message_reminder'          => 'Hi {recipient},<br /><br />' .
-			                                   '{sender} has sent you a private message on {site_name}.<br /><br />' .
-			                                   'To view your new message(s) click the following link:<br />' .
-			                                   '{message_history}<br /><br />' .
-			                                   'This is an automated notification from {site_name}. ' .
-			                                   'You do not need to reply.',
+			'show_pm_button'               => 1,
+			'profile_tab_messages'         => 1,
+			'pm_unread_first'              => 0,
+			'pm_hide_history'              => 0,
+			'pm_char_limit'                => 200,
+			'pm_block_users'               => '',
+			'pm_active_color'              => '#0085ba',
+			'pm_coversation_refresh_timer' => 5,
+			'pm_notify_period'             => 86400,
+			'pm_remind_period'             => 3,
+			'pm_remind_limit'              => 1,
+			'new_message_on'               => 1,
+			'new_message_sub'              => '{sender} has messaged you on {site_name}!',
+			'new_message'                  => 'Hi {recipient},<br /><br />' .
+											'{sender} has just sent you a new private message on {site_name}.<br /><br />' .
+											'To view your new message(s) click the following link:<br />' .
+											'{message_history}<br /><br />' .
+											'This is an automated notification from {site_name}. You do not need to reply.',
+			'new_message_reminder_on'      => 0,
+			'new_message_reminder_sub'     => 'You have unread message from {sender} on {site_name}!',
+			'new_message_reminder'         => 'Hi {recipient},<br /><br />' .
+											'{sender} has sent you a private message on {site_name}.<br /><br />' .
+											'To view your new message(s) click the following link:<br />' .
+											'{message_history}<br /><br />' .
+											'This is an automated notification from {site_name}. ' .
+											'You do not need to reply.',
 		);
 
 		$notification_types_templates = array(
-			'new_pm'    => __( '<strong>{member}</strong> has just sent you a private message.', 'um-messaging' ),
+			'new_pm' => __( '<strong>{member}</strong> has just sent you a private message.', 'um-messaging' ),
 		);
 
 		foreach ( $notification_types_templates as $k => $template ) {
@@ -88,7 +89,6 @@ class Messaging_Setup {
 	/**
 	 * SQL DB setup
 	 * @global \wpdb $wpdb
-	 * @return boolean
 	 */
 	public function sql_setup() {
 		global $wpdb;
@@ -171,8 +171,47 @@ KEY author (author)
 	 *
 	 */
 	public function run_setup() {
+		$this->single_site_activation();
+		if ( is_multisite() ) {
+			if ( is_plugin_active_for_network( um_messaging_plugin ) ) {
+				update_network_option( get_current_network_id(), 'um_messaging_maybe_network_wide_activation', 1 );
+			}
+		}
+	}
+
+
+	/**
+	 * Maybe need multisite activation process
+	 *
+	 */
+	function maybe_network_activation() {
+		$maybe_activation = get_network_option( get_current_network_id(), 'um_messaging_maybe_network_wide_activation' );
+
+		if ( $maybe_activation ) {
+
+			delete_network_option( get_current_network_id(), 'um_messaging_maybe_network_wide_activation' );
+
+			if ( is_plugin_active_for_network( um_messaging_plugin ) ) {
+				// get all blogs
+				$blogs = get_sites();
+				if ( ! empty( $blogs ) ) {
+					foreach( $blogs as $blog ) {
+						switch_to_blog( $blog->blog_id );
+						//make activation script for each sites blog
+						$this->single_site_activation();
+						restore_current_blog();
+					}
+				}
+			}
+		}
+	}
+
+
+	/**
+	 * Single site plugin activation handler
+	 */
+	function single_site_activation() {
 		$this->sql_setup();
 		$this->set_default_settings();
 	}
-
 }

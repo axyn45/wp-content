@@ -85,36 +85,49 @@ if ( ! UM()->Messaging_API()->api()->can_message( $message_to ) ) {
 	<div class="um-message-footer um-popup-footer" data-limit_hit="<?php esc_attr_e( 'You have reached your limit for sending messages.', 'um-messaging' ); ?>" >
 
 		<?php if ( UM()->Messaging_API()->api()->limit_reached() ) {
-
 			esc_html_e( 'You have reached your limit for sending messages.', 'um-messaging' );
+			return;
 
-		} elseif( ! UM()->roles()->um_user_can( 'can_reply_pm' ) && ! empty( $response ) ) {
+		} elseif ( ! UM()->roles()->um_user_can( 'can_reply_pm' ) && ! empty( $response ) ) {
 			esc_html_e( 'You are not allowed to reply to private messages.', 'um-messaging' );
-
-		} elseif( ! UM()->roles()->um_user_can( 'can_start_pm' ) && empty( $response ) && empty( $other_message ) ) {
+			return;
+		} elseif ( UM()->roles()->um_user_can( 'can_reply_pm' ) && ! empty( $response ) && ! empty( UM()->roles()->um_user_can( 'can_reply_access' ) )  ) {
+			$roles          = UM()->roles()->um_user_can( 'can_reply_roles' );
+			$receiver_roles = UM()->roles()->get_all_user_roles( $message_to );
+			if ( ! empty( $roles ) && empty( array_intersect( $roles, $receiver_roles ) ) ) {
+				esc_html_e( 'You are not allowed to reply to private messages with this user.',  'um-messaging' );
+				return;
+			}
+		} elseif ( ! UM()->roles()->um_user_can( 'can_start_pm' ) && empty( $response ) && empty( $other_message ) ) {
 			esc_html_e( 'You are not allowed to start conversations.', 'um-messaging' );
+			return;
+		} elseif ( UM()->roles()->um_user_can( 'can_start_pm' ) && empty( $response ) && empty( $other_message ) && ! empty( UM()->roles()->um_user_can( 'can_start_access' ) ) ) {
+			$roles          = UM()->roles()->um_user_can( 'can_start_roles' );
+			$receiver_roles = UM()->roles()->get_all_user_roles( $message_to );
+			if ( ! empty( $roles ) && empty( array_intersect( $roles, $receiver_roles ) ) ) {
+				esc_html_e( 'You are not allowed to start conversations with this user.', 'um-messaging' );
+				return;
+			}
+		} ?>
 
-		} else { ?>
+		<div class="um-message-textarea">
 
-			<div class="um-message-textarea">
+			<?php UM()->get_template( 'emoji.php', um_messaging_plugin, array(), true ); ?>
 
-				<?php UM()->get_template( 'emoji.php', um_messaging_plugin, array(), true ); ?>
+			<textarea id="um_message_text" name="um_message_text" class="um_message_text" data-maxchar="<?php echo $limit; ?>" placeholder="<?php esc_attr_e( 'Type your message...', 'um-messaging' ); ?>"></textarea>
 
-				<textarea id="um_message_text" name="um_message_text" class="um_message_text" data-maxchar="<?php echo $limit; ?>" placeholder="<?php esc_attr_e( 'Type your message...', 'um-messaging' ); ?>"></textarea>
+		</div>
 
-			</div>
+		<div class="um-message-buttons">
+			<span class="um-message-limit"><?php echo $limit; ?></span>
+			<a href="javascript:void(0);" class="um-message-send disabled">
+				<i class="um-faicon-envelope-o"></i>
+				<?php esc_html_e( 'Send message', 'um-messaging' ); ?>
+			</a>
+		</div>
 
-			<div class="um-message-buttons">
-				<span class="um-message-limit"><?php echo $limit; ?></span>
-				<a href="javascript:void(0);" class="um-message-send disabled">
-					<i class="um-faicon-envelope-o"></i>
-					<?php esc_html_e( 'Send message', 'um-messaging' ); ?>
-				</a>
-			</div>
+		<div class="um-clear"></div>
 
-			<div class="um-clear"></div>
-
-		<?php } ?>
 
 	</div>
 <?php }

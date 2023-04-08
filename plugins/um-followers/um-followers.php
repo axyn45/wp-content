@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Member - Followers
 Plugin URI: http://ultimatemember.com/extensions/followers
 Description: Add a follow feature for your community users easily.
-Version: 2.2.2
+Version: 2.2.6
 Author: Ultimate Member
 Author URI: http://ultimatemember.com/
 Text Domain: um-followers

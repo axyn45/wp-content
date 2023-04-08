@@ -5,8 +5,8 @@ Contributors: ultimatemember, champsupertramp, nsinelnikov
 Donate link: 
 Tags: followers, community, discussion
 Requires at least: 5.0
-Tested up to: 5.7
-Stable tag: 2.2.2
+Tested up to: 6.0
+Stable tag: 2.2.6
 License: GNU Version 2 or Any Later Version
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 Requires UM core at least: 2.1.0
@@ -55,6 +55,22 @@ Got a problem or need help with Ultimate Member? Head over to our [documentation
 3. For more details, please visit the official [Documentation](http://docs.ultimatemember.com/article/231-followers-setup) page.
 
 == Changelog ==
+
+= 2.2.6: August 17, 2022 =
+
+* Fixed: Update followers|following counters on the user profile after follow|un-follow actions
+
+= 2.2.5: February 9, 2022 =
+
+* Fixed: Extension settings structure
+
+= 2.2.4: July 20, 2021 =
+
+* Tweak: WP5.8 widgets screen compatibility
+
+= 2.2.3: May 7, 2021 =
+
+* Added: Profile tab privacy for friends and followers only
 
 = 2.2.2: March 29, 2021 =
 

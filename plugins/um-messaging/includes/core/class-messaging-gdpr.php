@@ -72,12 +72,14 @@ class Messaging_GDPR {
 	 * @return string
 	 */
 	function get_download_url( $conversation_id ) {
+		$url = get_home_url( get_current_blog_id() );
+
 		$args = array(
 			'download_chat_history' => 'true',
 			'conversation_id'       => $conversation_id,
 		);
 
-		return add_query_arg( $args );
+		return add_query_arg( $args, $url );
 	}
 
 
@@ -88,10 +90,16 @@ class Messaging_GDPR {
 	 * @param $user_id
 	 */
 	function render_download_chat_link( $message_to, $user_id ) {
+		$hide = UM()->options()->get( 'pm_hide_history' );
+		if ( ! empty( $hide ) ) {
+			return;
+		}
+
 		$loop_user = um_user( 'ID' );
 		um_fetch_user( $user_id );
 		if ( ! um_user( 'can_read_pm' ) ) {
 			um_fetch_user( $loop_user );
+
 			return;
 		}
 
@@ -103,12 +111,13 @@ class Messaging_GDPR {
 			return;
 		}
 
-		$messages = UM()->Messaging_API()->api()->get_conversation_messages( $response['conversation_id'] ); ?>
+		$messages = UM()->Messaging_API()->api()->get_conversation_messages( $response['conversation_id'] );
+		?>
 
-		<a href="<?php echo esc_url( $this->get_download_url( $response['conversation_id'] ) ) ?>"
-		   data-conversation_id="<?php echo ! empty( $response['conversation_id'] ) ? esc_attr( $response['conversation_id'] ) : 'new'; ?>"
-		   class="um-gdpr-donwload-link um-tip-e" title="<?php esc_attr_e( 'Download History', 'um-messaging' ); ?>"
-		   <?php if ( empty( $response ) || empty( $messages ) ) { ?>style="display: none;"<?php } ?>>
+		<a href="<?php echo esc_url( $this->get_download_url( $response['conversation_id'] ) ); ?>"
+			data-conversation_id="<?php echo ! empty( $response['conversation_id'] ) ? esc_attr( $response['conversation_id'] ) : 'new'; ?>"
+			class="um-gdpr-donwload-link um-tip-e" title="<?php esc_attr_e( 'Download History', 'um-messaging' ); ?>"
+			<?php if ( empty( $response ) || empty( $messages ) ) { ?>style="display: none;"<?php } ?>>
 			<i class="um-faicon-download"></i>
 		</a>
 
@@ -120,6 +129,11 @@ class Messaging_GDPR {
 	 *
 	 */
 	function render_download_all_chats_link() {
+		$hide = UM()->options()->get( 'pm_hide_history' );
+		if ( ! empty( $hide ) ) {
+			return;
+		}
+
 		$loop_user = um_user( 'ID' );
 		um_fetch_user( get_current_user_id() );
 		if ( ! um_user( 'can_read_pm' ) ) {
@@ -127,9 +141,11 @@ class Messaging_GDPR {
 			return;
 		}
 
-		um_fetch_user( $loop_user ); ?>
+		um_fetch_user( $loop_user );
+		?>
 
-		<a href="<?php echo esc_url( $this->get_download_url( 'all' ) ) ?>" class="um-link um-gdpr-donwload-link" title="<?php esc_attr_e( 'Download History', 'um-messaging' ); ?>"><?php _e( 'Download Chats History', 'um-messaging' ) ?></a>
+		<a href="<?php echo esc_url( $this->get_download_url( 'all' ) ); ?>" class="um-link um-gdpr-donwload-link" title="<?php esc_attr_e( 'Download History', 'um-messaging' ); ?>"><?php esc_html_e( 'Download Chats History', 'um-messaging' ); ?></a>
+
 		<?php
 	}
 
@@ -212,6 +228,11 @@ class Messaging_GDPR {
 		}
 
 		if ( ! um_user( 'can_read_pm' ) ) {
+			return;
+		}
+
+		$hide = UM()->options()->get( 'pm_hide_history' );
+		if ( ! empty( $hide ) ) {
 			return;
 		}
 

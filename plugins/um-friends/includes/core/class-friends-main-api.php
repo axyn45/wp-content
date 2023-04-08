@@ -1,9 +1,10 @@
 <?php
 namespace um_ext\um_friends\core;
 
-
 // Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 
 /**
@@ -16,9 +17,9 @@ class Friends_Main_API {
 	/**
 	 * Friends_Main_API constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		global $wpdb;
-		$this->table_name = $wpdb->prefix . "um_friends";
+		$this->table_name = $wpdb->prefix . 'um_friends';
 	}
 
 
@@ -540,7 +541,7 @@ class Friends_Main_API {
 	/**
 	 * Ajax Approve friend request
 	 */
-	function ajax_friends_approve() {
+	public function ajax_friends_approve() {
 		UM()->check_ajax_nonce();
 
 		/**
@@ -560,10 +561,12 @@ class Friends_Main_API {
 
 		$this->approve( $user_id, $user_id2 );
 
-		$output = array();
-		$output['btn'] = $this->friend_button( $user_id, $user_id2 );
+		$output             = array();
+		$output['btn']      = $this->friend_button( $user_id, $user_id2 );
+		$output['friends']  = $this->count_friends( $user_id2, false );
+		$output['received'] = $this->count_friend_requests_received( $user_id2 );
 
-		do_action('um_friends_after_user_friend', $user_id, $user_id2 );
+		do_action( 'um_friends_after_user_friend', $user_id, $user_id2 );
 
 		wp_send_json_success( $output );
 	}
@@ -572,7 +575,7 @@ class Friends_Main_API {
 	/**
 	 * Ajax Add friend
 	 */
-	function ajax_friends_add() {
+	public function ajax_friends_add() {
 		UM()->check_ajax_nonce();
 
 		/**
@@ -592,10 +595,11 @@ class Friends_Main_API {
 
 		$this->add( $user_id, $user_id2 );
 
-		$output = array();
-		$output['btn'] = $this->friend_button( $user_id, $user_id2 ); // re-init friends button between users
+		$output                  = array();
+		$output['btn']           = $this->friend_button( $user_id, $user_id2 ); // re-init friends button between users
+		$output['requests_sent'] = $this->count_friend_requests_sent( $user_id2 );
 
-		do_action('um_friends_after_user_friend_request', $user_id, $user_id2 );
+		do_action( 'um_friends_after_user_friend_request', $user_id, $user_id2 );
 
 		wp_send_json_success( $output );
 	}
@@ -604,7 +608,7 @@ class Friends_Main_API {
 	/**
 	 * Ajax UnFriend
 	 */
-	function ajax_friends_unfriend() {
+	public function ajax_friends_unfriend() {
 		UM()->check_ajax_nonce();
 
 		/**
@@ -618,16 +622,18 @@ class Friends_Main_API {
 			wp_send_json_error();
 		}
 
-		if ( ! $this->can_friend( $user_id, $user_id2 )) {
+		if ( ! $this->can_friend( $user_id, $user_id2 ) ) {
 			wp_send_json_error();
 		}
 
 		$this->remove( $user_id, $user_id2 );
 
-		$output = array();
-		$output['btn'] = $this->friend_button( $user_id, $user_id2 );
+		$output             = array();
+		$output['btn']      = $this->friend_button( $user_id, $user_id2 );
+		$output['friends']  = $this->count_friends( $user_id2, false );
+		$output['received'] = $this->count_friend_requests_received( $user_id2 );
 
-		do_action('um_friends_after_user_unfriend', $user_id, $user_id2 );
+		do_action( 'um_friends_after_user_unfriend', $user_id, $user_id2 );
 
 		wp_send_json_success( $output );
 	}
@@ -636,7 +642,7 @@ class Friends_Main_API {
 	/**
 	 * Ajax cancel friend's request
 	 */
-	function ajax_friends_cancel_request() {
+	public function ajax_friends_cancel_request() {
 		UM()->check_ajax_nonce();
 
 		/**
@@ -656,8 +662,9 @@ class Friends_Main_API {
 
 		$this->cancel( $user_id, $user_id2 );
 
-		$output = array();
-		$output['btn'] = $this->friend_button( $user_id, $user_id2 );
+		$output                  = array();
+		$output['btn']           = $this->friend_button( $user_id, $user_id2 );
+		$output['requests_sent'] = $this->count_friend_requests_sent( $user_id2 );
 
 		do_action( 'um_friends_after_user_cancel_request', $user_id, $user_id2 );
 

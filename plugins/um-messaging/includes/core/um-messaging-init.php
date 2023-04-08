@@ -63,6 +63,25 @@ class UM_Messaging_API {
 		add_action( 'wp_ajax_nopriv_um_messaging_login_modal', array( $this->api(), 'ajax_messaging_login_modal' ) );
 		add_action( 'wp_ajax_um_messaging_start', array( $this->api(), 'ajax_messaging_start' ) );
 		add_action( 'wp_ajax_um_conversations_load', array( $this->api(), 'ajax_conversations_load' ) );
+
+
+		if ( is_multisite() && ! defined( 'DOING_AJAX' ) ) {
+			add_action( 'wp_loaded', array( $this->setup(), 'maybe_network_activation' ) );
+		}
+
+		add_action( 'wp_insert_site', array( &$this, 'create_new_blog' ), 10, 1 );
+	}
+
+
+	/**
+	 * @param \WP_Site $blog
+	 */
+	function create_new_blog( $blog ) {
+		if ( is_plugin_active_for_network( um_messaging_plugin ) ) {
+			switch_to_blog( $blog->blog_id );
+			$this->setup()->single_site_activation();
+			restore_current_blog();
+		}
 	}
 
 

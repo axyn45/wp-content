@@ -266,7 +266,7 @@ function um_setCaretPosition( el, current_position ) {
 		start: current_position,
 		end: current_position
 	};
-	el.trigger('focus');
+	jQuery(el).trigger('focus');
 }
 
 
@@ -308,7 +308,9 @@ function um_getCaretPosition(el) {
 
 
 /* End of custom functions */
-function initMessaging(){
+
+jQuery(document).ready(function() {
+
 	jQuery(document.body).on('mouseenter','.um-message-item', function() {
 		jQuery(this).find('.um-message-item-show-on-hover').show();
 	});
@@ -785,5 +787,4 @@ function initMessaging(){
 	/* Height of conversation */
 	um_messaging_init_conversations_list();
 	UM_Update_UTC_to_LocalTime();
-}
-jQuery(document).ready(initMessaging());
+});

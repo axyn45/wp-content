@@ -32,6 +32,14 @@ class um_my_following extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
+		if ( ! empty( $_GET['legacy-widget-preview'] ) && defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST ) {
+			return;
+		}
+
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		$max = $instance['max'];
 		
@@ -148,9 +156,17 @@ class um_my_followers extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
+		if ( ! empty( $_GET['legacy-widget-preview'] ) && defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST ) {
+			return;
+		}
+
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		$max = $instance['max'];
-		
+
 		if ( ! is_user_logged_in() ) {
 			return;
 		}

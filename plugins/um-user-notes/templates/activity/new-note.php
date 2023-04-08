@@ -1,0 +1,3 @@
+<?php if ( ! defined( 'ABSPATH' ) ) exit; ?>
+
+<a href="{author_profile}" class="um-link">{author_name}</a> <?php _e('just created a new ','um-user-notes');?> <a href="{post_url}" class="um-link um_note_read_more" data-id="{related_id}"><?php _e('note','um-user-notes');?></a>. <span class="post-meta"><a class="um_note_read_more" href="{post_url}" data-id="{related_id}">{post_image} {post_title} {post_excerpt}</a></span>

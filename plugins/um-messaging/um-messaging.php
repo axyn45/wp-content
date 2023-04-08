@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Member - Private Messages
 Plugin URI: http://ultimatemember.com/extensions/private-messages
 Description: Allow users to send private messages to each other on your site.
-Version: 2.3.0
+Version: 2.3.3
 Author: Ultimate Member
 Author URI: http://ultimatemember.com/
 Text Domain: um-messaging

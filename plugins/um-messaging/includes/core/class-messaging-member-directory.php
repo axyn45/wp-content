@@ -28,7 +28,7 @@ class Messaging_Member_Directory {
 
 		add_filter( 'um_ajax_get_members_data', array( &$this, 'um_messaging_ajax_get_members_data' ), 50, 2 );
 
-		add_action( 'um_members_directory_footer', array( &$this, 'um_members_directory_login_form_footer' ), 99, 1 );
+		add_action( 'um_members_directory_footer', array( &$this, 'um_members_directory_login_form_footer' ), 99, 3 );
 		add_action( 'wp_footer', array( &$this, 'um_messaging_open_modal' ) );
 	}
 
@@ -140,12 +140,14 @@ class Messaging_Member_Directory {
 	 * Insert Login form to hidden block
 	 *
 	 * @param array $args
+	 * @param int $form_id
+	 * @param $not_searched
 	 */
-	function um_members_directory_login_form_footer( $args ) {
+	function um_members_directory_login_form_footer( $args, $form_id, $not_searched ) {
 		if ( is_user_logged_in() ) {
 			return;
 		}
-		if ( !empty( $args['hide_pm_button'] ) ) {
+		if ( ! empty( $args['hide_pm_button'] ) ) {
 			return;
 		}
 		if ( empty( UM()->options()->get( 'show_pm_button' ) ) ) {

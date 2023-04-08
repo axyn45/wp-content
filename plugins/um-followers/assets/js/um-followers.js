@@ -2,6 +2,28 @@ var um_followers_ajax = false;
 
 jQuery(document).ready(function() {
 
+	/**
+	 * Update counters "followers" and "following".
+	 * @param   {object} data  Data for the current and target members.
+	 * @param   {object} e     Event.
+	 * @returns {undefined}
+	 */
+	function updateCounts( data, e ) {
+		var $block  = typeof e === 'object' ? jQuery( e.currentTarget ).closest( 'div.um-profile, div.um-member' ) : jQuery( 'div.um-profile' );
+		var user_id = $block.find( '.um-cover[data-user_id], .um-profile-photo[data-user_id], [data-user_id]' ).first().data( 'user_id' );
+
+		jQuery.each( data, function ( key, item ) {
+			if ( user_id === item.user_id ) {
+				if ( 'undefined' !== item.followers ) {
+					$block.find( 'span.um-ajax-count-followers' ).text( item.followers );
+				}
+				if ( 'undefined' !== item.following ) {
+					$block.find( 'span.um-ajax-count-following' ).text( item.following );
+				}
+			}
+		} );
+	}
+
 	/* Mouse over of following button */
 	jQuery( document.body ).on( 'mouseenter', '.um-unfollow-btn', function() {
 		if ( ! jQuery(this).hasClass('um_followers_ajax') ) {
@@ -38,12 +60,8 @@ jQuery(document).ready(function() {
 				nonce: um_scripts.nonce
 			},
 			success: function( response ) {
-				if ( typeof ( response.count ) !== 'undefined' ) {
-					if ( member_directory ) {
-						btn.parents( '.um-member' ).find('span.um-ajax-count-followers').text( response.count );
-					} else {
-						jQuery('span.um-ajax-count-followers').text( response.count );
-					}
+				if ( typeof response.stats === 'object' ) {
+					updateCounts( response.stats, e );
 				}
 
 				btn.replaceWith( response.btn );
@@ -76,12 +94,8 @@ jQuery(document).ready(function() {
 				nonce: um_scripts.nonce
 			},
 			success: function( response ) {
-				if ( typeof ( response.count ) !== 'undefined' ) {
-					if ( member_directory ) {
-						btn.parents( '.um-member' ).find('span.um-ajax-count-followers').text( response.count );
-					} else {
-						jQuery('span.um-ajax-count-followers').text( response.count );
-					}
+				if ( typeof response.stats === 'object' ) {
+					updateCounts( response.stats, e );
 				}
 
 				btn.replaceWith( response.btn );

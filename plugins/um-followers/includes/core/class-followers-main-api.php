@@ -402,7 +402,7 @@ class Followers_Main_API {
 				FROM {$this->table_name}
 				WHERE user_id1 = %d AND
 					  user_id2 IN ( SELECT ID FROM {$wpdb->users} )
-				ORDER BY time DESC 
+				ORDER BY time DESC
 				LIMIT %d",
 				$user_id1,
 				$args['max']
@@ -438,7 +438,7 @@ class Followers_Main_API {
 				FROM {$this->table_name}
 				WHERE user_id2 = %d AND
 					  user_id1 IN ( SELECT ID FROM {$wpdb->users} )
-				ORDER BY time DESC 
+				ORDER BY time DESC
 				LIMIT %d",
 				$user_id2,
 				$args['max']
@@ -483,7 +483,17 @@ class Followers_Main_API {
 
 		$output = array();
 		$output['btn'] = $this->follow_button( $user_id, $user_id2 ); // following user id , current user id
-		$output['count'] = $this->count_followers_plain( $user_id );
+
+		$output['stats'] = array(
+			array(
+				'user_id'   => absint( $user_id ),
+				'followers' => $this->count_followers_plain( $user_id ),
+			),
+			array(
+				'user_id'   => absint( $user_id2 ),
+				'following' => $this->count_following_plain( $user_id2 ),
+			),
+		);
 
 		do_action( 'um_followers_after_user_follow', $user_id, $user_id2 );
 
@@ -516,7 +526,17 @@ class Followers_Main_API {
 
 		$output = array();
 		$output['btn'] = $this->follow_button( $user_id, $user_id2 );
-		$output['count'] = $this->count_followers_plain( $user_id );
+
+		$output['stats'] = array(
+			array(
+				'user_id'   => absint( $user_id ),
+				'followers' => $this->count_followers_plain( $user_id ),
+			),
+			array(
+				'user_id'   => absint( $user_id2 ),
+				'following' => $this->count_following_plain( $user_id2 ),
+			),
+		);
 
 		do_action( 'um_followers_after_user_unfollow', $user_id, $user_id2 );
 
@@ -564,7 +584,7 @@ class Followers_Main_API {
 					FROM {$this->table_name}
 					WHERE user_id1 = %d AND
 						  user_id2 IN ( SELECT ID FROM {$wpdb->users} )
-					ORDER BY time DESC 
+					ORDER BY time DESC
 					LIMIT %d, %d",
 					$user_id,
 					$offset,
@@ -583,7 +603,7 @@ class Followers_Main_API {
 					FROM {$this->table_name}
 					WHERE user_id2 = %d AND
 						  user_id1 IN ( SELECT ID FROM {$wpdb->users} )
-					ORDER BY time DESC 
+					ORDER BY time DESC
 					LIMIT %d, %d",
 					$user_id,
 					$args['max'],

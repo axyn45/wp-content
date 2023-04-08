@@ -34,12 +34,20 @@ class um_my_friends extends WP_Widget {
 	 * @param array $instance
 	 */
 	public function widget( $args, $instance ) {
+		if ( defined( 'REST_REQUEST' ) && REST_REQUEST ) {
+			return;
+		}
+
+		if ( ! empty( $_GET['legacy-widget-preview'] ) && defined( 'IFRAME_REQUEST' ) && IFRAME_REQUEST ) {
+			return;
+		}
+
 		wp_enqueue_script( 'um_friends' );
 		wp_enqueue_style( 'um_friends' );
 
 		$title = apply_filters( 'widget_title', $instance['title'] );
 		$max = $instance['max'];
-		
+
 		if ( ! is_user_logged_in() ) {
 			return;
 		}
@@ -49,9 +57,9 @@ class um_my_friends extends WP_Widget {
 		if ( ! empty( $title ) ) {
 			echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
 		}
-		
+
 		// This is where you run the code and display the output
-		if ( version_compare( get_bloginfo('version'),'5.4', '<' ) ) {
+		if ( version_compare( get_bloginfo( 'version' ), '5.4', '<' ) ) {
 			echo do_shortcode( '[ultimatemember_friends style="avatars" max="' . $max . '"]' );
 		} else {
 			echo apply_shortcodes( '[ultimatemember_friends style="avatars" max="' . $max . '"]' );

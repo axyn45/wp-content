@@ -75,6 +75,7 @@ function um_friends_messaging_privacy_options( $options ) {
 }
 add_filter( 'um_messaging_privacy_options', 'um_friends_messaging_privacy_options', 10, 1 );
 add_filter( 'um_user_notes_privacy_options_dropdown', 'um_friends_messaging_privacy_options', 10, 1 );
+add_filter( 'um_user_photos_privacy_options_dropdown', 'um_friends_messaging_privacy_options', 10, 1 );
 
 
 /**
@@ -108,6 +109,22 @@ function um_user_notes_exclude_activity( $options, $user_id = null ) {
 	return $options;
 }
 add_filter( 'um_user_notes_exclude_activity', 'um_user_notes_exclude_activity', 10, 2 );
+
+
+/**
+ * @param $options
+ * @param null $user_id
+ *
+ * @return array
+ */
+function um_user_photos_exclude_activity( $options, $user_id = null ) {
+	if ( empty( $user_id ) || ! UM()->Friends_API()->api()->is_friend( $user_id, um_profile_id() ) ) {
+		$options[] = 'friends';
+	}
+
+	return $options;
+}
+add_filter( 'um_user_photos_exclude_activity', 'um_user_photos_exclude_activity', 10, 2 );
 
 
 /**
@@ -148,7 +165,7 @@ function um_friends_user_add_tab( $tabs ) {
 	$username = um_user( 'display_name' );
 
 	$myfriends = ( um_is_myprofile() ) ? __( 'My Friends', 'um-friends' ) : sprintf( __( '%s\'s friends', 'um-friends' ), $username );
-	$myfriends .= '<span>' . UM()->Friends_API()->api()->count_friends( $user_id, false ) . '</span>';
+	$myfriends .= '<span class="um-profile-friends">' . UM()->Friends_API()->api()->count_friends( $user_id, false ) . '</span>';
 
 	$new_reqs = UM()->Friends_API()->api()->count_friend_requests_received( $user_id );
 
@@ -167,8 +184,8 @@ function um_friends_user_add_tab( $tabs ) {
 		// Display number of requests on the friends tab
 		$tabs['friends']['notifier'] = (int) $new_reqs;
 		
-		$tabs['friends']['subnav']['friendreqs'] = __( 'Friend Requests', 'um-friends') . '<span class="'. $class . '">' . $new_reqs . '</span>';
-		$tabs['friends']['subnav']['sentreqs'] = __( 'Friend Requests Sent', 'um-friends') . '<span>' . UM()->Friends_API()->api()->count_friend_requests_sent( $user_id ) . '</span>';
+		$tabs['friends']['subnav']['friendreqs'] = __( 'Friend Requests', 'um-friends') . '<span class="um-profile-friends-requests '. $class . '">' . $new_reqs . '</span>';
+		$tabs['friends']['subnav']['sentreqs'] = __( 'Friend Requests Sent', 'um-friends') . '<span class="um-profile-friends-requests-sent">' . UM()->Friends_API()->api()->count_friend_requests_sent( $user_id ) . '</span>';
 	}
 
 	return $tabs;
@@ -330,3 +347,78 @@ function um_friends_activity_mention_integration( $content, $user_id, $post_id, 
 	return $content;
 }
 add_filter( 'um_activity_mention_integration', 'um_friends_activity_mention_integration', 10, 4 );
+
+
+/**
+ * Add options for profile tabs' privacy
+ *
+ * @param array $options
+ *
+ * @return array
+ */
+function um_friends_profile_tabs_privacy_options( $options ) {
+	$options[7] = __( 'Only friends', 'um-friends' );
+
+	// check if there is 'only followers' option
+	if ( isset( $options[6] ) ) {
+		$options[8] = __( 'Only friends and followers', 'um-friends' );
+	}
+
+	return $options;
+}
+add_filter( 'um_profile_tabs_privacy_list', 'um_friends_profile_tabs_privacy_options', 10, 1 );
+
+
+/**
+ * Show profile tab only for friends
+ *
+ * @param bool $can_view
+ * @param int $privacy
+ * @param string $tab
+ * @param array $tab_data
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function um_friends_can_view_profile_tab( $can_view, $privacy, $tab, $tab_data, $user_id ) {
+	if ( ! in_array( $privacy, [ 7, 8 ] ) ) {
+		return $can_view;
+	}
+
+	if ( ! is_user_logged_in() ) {
+		$can_view = false;
+	} else {
+		if ( get_current_user_id() == $user_id ) {
+			$can_view = false;
+		} else {
+			if ( ! UM()->Friends_API()->api()->is_friend( get_current_user_id(), $user_id ) ) {
+				$can_view = apply_filters( 'um_friends_profile_tab_not_friend_maybe_other', false, $privacy, $user_id );
+			}
+		}
+	}
+
+	return $can_view;
+}
+add_filter( 'um_profile_menu_can_view_tab', 'um_friends_can_view_profile_tab', 10, 5 );
+
+
+/**
+ * Show profile tab 'only for friends and followers',
+ * case if not follower maybe friend
+ *
+ * @param bool $can_view
+ * @param int $privacy
+ * @param int $user_id
+ *
+ * @return bool
+ */
+function um_friends_profile_tab_not_follower_maybe_other( $can_view, $privacy, $user_id ) {
+	if ( $privacy == 8 ) {
+		if ( UM()->Friends_API()->api()->is_friend( get_current_user_id(), $user_id ) ) {
+			$can_view = true;
+		}
+	}
+
+	return $can_view;
+}
+add_filter( 'um_followers_profile_tab_not_follower_maybe_other', 'um_friends_profile_tab_not_follower_maybe_other', 10, 3 );

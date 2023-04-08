@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Member - Friends
 Plugin URI: http://ultimatemember.com/extensions/friends
 Description: Add a friendship system for your community users easily.
-Version: 2.2.0
+Version: 2.2.4
 Author: Ultimate Member
 Author URI: http://ultimatemember.com/
 Text Domain: um-friends

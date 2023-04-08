@@ -83,9 +83,9 @@ class Followers_Shortcode {
 	 */
 	function ultimatemember_followers( $args = array() ) {
 		$defaults = array(
-			'user_id'   => um_profile_id(),
-			'style'     => 'default',
-			'max'       => ''
+			'user_id' => um_profile_id(),
+			'style'   => 'default',
+			'max'     => '',
 		);
 
 		$args = shortcode_atts( $defaults, $args );
@@ -102,18 +102,18 @@ class Followers_Shortcode {
 
 		$tpl = 'followers';
 		if ( $style == 'avatars' ) {
-			$t_args = [
-				'user_id'   => $args['user_id'],
-				'max'       => $args['max'],
-			];
+			$t_args = array(
+				'user_id' => $args['user_id'],
+				'max'     => $args['max'],
+			);
 			$tpl .= '-mini';
 		} else {
 			$followers = UM()->Followers_API()->api()->followers( um_user( 'ID' ), $args );
 
-			$t_args = [
+			$t_args = array(
 				'user_id'   => $args['user_id'],
 				'followers' => $followers,
-			];
+			);
 		}
 
 		$output = UM()->get_template( $tpl . '.php', um_followers_plugin, $t_args );
@@ -131,9 +131,9 @@ class Followers_Shortcode {
 	 */
 	function ultimatemember_following( $args = array() ) {
 		$defaults = array(
-			'user_id'   => um_profile_id(),
-			'style'     => 'default',
-			'max'       => ''
+			'user_id' => um_profile_id(),
+			'style'   => 'default',
+			'max'     => '',
 		);
 		$args = shortcode_atts( $defaults, $args );
 
@@ -149,17 +149,17 @@ class Followers_Shortcode {
 
 		$tpl = 'following';
 		if ( $style == 'avatars' ) {
-			$t_args = [
-				'user_id'   => $args['user_id'],
-				'max'       => $args['max'],
-			];
+			$t_args = array(
+				'user_id' => $args['user_id'],
+				'max'     => $args['max'],
+			);
 			$tpl .= '-mini';
 		} else {
 			$following = UM()->Followers_API()->api()->following( um_user( 'ID' ), $args );
-			$t_args = [
+			$t_args = array(
 				'user_id'   => $args['user_id'],
 				'following' => $following,
-			];
+			);
 		}
 
 		$output = UM()->get_template( $tpl . '.php', um_followers_plugin, $t_args );

@@ -30,13 +30,13 @@ if ( ! defined( 'ABSPATH' ) ) exit; ?>
 <?php if ( ! empty( $conversations ) ) { ?>
 
 	<div class="um um-viewing">
-		<div class="um-message-conv" data-user="<?php echo esc_attr( um_profile_id() ); ?>">
+		<div class="um-message-conv" data-user="<?php echo esc_attr( $user_id ); ?>">
 
 			<?php $i = 0;
 			$profile_can_read = um_user( 'can_read_pm' );
 			foreach ( $conversations as $conversation ) {
 
-				if ( $conversation->user_a == um_profile_id() ) {
+				if ( (int) $conversation->user_a === $user_id ) {
 					$user = $conversation->user_b;
 				} else {
 					$user = $conversation->user_a;
@@ -48,7 +48,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; ?>
 
 				$user_name = ( um_user( 'display_name' ) ) ? um_user( 'display_name' ) : __( 'Deleted User', 'um-messaging' );
 
-				$is_unread = UM()->Messaging_API()->api()->unread_conversation( $conversation->conversation_id, um_profile_id() ); ?>
+				$is_unread = UM()->Messaging_API()->api()->unread_conversation( $conversation->conversation_id, $user_id ); ?>
 
 				<a href="<?php echo esc_url( add_query_arg( 'conversation_id', $conversation->conversation_id ) ); ?>" class="um-message-conv-item" data-message_to="<?php echo esc_attr( $user ); ?>" data-trigger_modal="conversation" data-conversation_id="<?php echo esc_attr( $conversation->conversation_id ); ?>">
 
@@ -65,7 +65,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; ?>
 				</a>
 
 			<?php } ?>
-			<div data-user="<?php echo um_profile_id(); ?>" class="um-message-conv-load-more"></div>
+			<div data-user="<?php echo esc_attr( $user_id ); ?>" class="um-message-conv-load-more"></div>
 		</div>
 
 		<div class="um-message-conv-view"></div>
@@ -81,4 +81,4 @@ if ( ! defined( 'ABSPATH' ) ) exit; ?>
 		<?php _e( 'No chats found here', 'um-messaging' ); ?>
 	</div>
 
-<?php } ?>
+<?php }
