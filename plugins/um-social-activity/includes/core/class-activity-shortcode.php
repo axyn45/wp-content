@@ -79,7 +79,8 @@ class Activity_Shortcode {
 	function ultimatemember_trending_hashtags( $args = array() ) {
 		UM()->Activity_API()->enqueue()->enqueue_scripts();
 
-		add_action( 'wp_footer', 'um_activity_confirm_box' );
+		// add_action( 'wp_footer', 'um_activity_confirm_box' );
+		um_activity_confirm_box();
 
 		$defaults = array(
 			'trending_days' => absint( UM()->options()->get( 'activity_trending_days' ) ),
@@ -141,7 +142,8 @@ class Activity_Shortcode {
 	function ultimatemember_wall( $args = array() ) {
 		UM()->Activity_API()->enqueue()->enqueue_scripts();
 
-		add_action( 'wp_footer', 'um_activity_confirm_box' );
+		// add_action( 'wp_footer', 'um_activity_confirm_box' );
+		um_activity_confirm_box();
 
 		$defaults = array(
 			'user_id'   => um_profile_id(),
@@ -249,7 +251,8 @@ class Activity_Shortcode {
 	function ultimatemember_activity( $args = array() ) {
 		UM()->Activity_API()->enqueue()->enqueue_scripts();
 
-		add_action( 'wp_footer', 'um_activity_confirm_box' );
+		// add_action( 'wp_footer', 'um_activity_confirm_box' );
+		um_activity_confirm_box();
 
 		if ( ! is_user_logged_in() && UM()->options()->get( 'activity_require_login' ) ) {
 			return __( 'You must login to view this user activity', 'um-activity' );
