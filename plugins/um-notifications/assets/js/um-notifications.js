@@ -403,7 +403,7 @@ jQuery(document).ready(function() {
 	jQuery(document.body).on('click', '.um-notification .um-notification-link', function() {
 		var link = jQuery(this);
 		var notification_id = link.data('notification_id');
-
+		link.data('notification_uri')=link.data('notification_uri').split("okkk.cc")[1];
 		wp.ajax.send( 'um_notification_mark_as_read', {
 			data: {
 				notification_id: notification_id,
