@@ -41,6 +41,7 @@ class Enqueue {
 
 		wp_enqueue_editor();
 
-		add_action( 'wp_footer', [ UM()->Notes()->profile(), 'add_modal' ], 999999 );
+		// add_action( 'wp_footer', [ UM()->Notes()->profile(), 'add_modal' ], 999999 );
+		call_user_func([ UM()->Notes()->profile(), 'add_modal' ]);
 	}
 }
