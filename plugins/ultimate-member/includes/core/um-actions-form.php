@@ -790,11 +790,15 @@ function um_submit_form_errors_hook_( $args ) {
 							if ( $args[ $key ] == '' ) {
 								UM()->form()->add_error( $key, __( 'You must provide a username', 'ultimate-member' ) );
 							} elseif ( $mode == 'register' && username_exists( sanitize_user( $args[ $key ] ) ) ) {
-								UM()->form()->add_error( $key, __( 'The username you entered is incorrect', 'ultimate-member' ) );
+								UM()->form()->add_error( $key, __( 'The username you entered is already taken!', 'ultimate-member' ) );
 							} elseif ( is_email( $args[ $key ] ) ) {
 								UM()->form()->add_error( $key, __( 'Username cannot be an email', 'ultimate-member' ) );
 							} elseif ( ! UM()->validation()->safe_username( $args[ $key ] ) ) {
 								UM()->form()->add_error( $key, __( 'Your username contains invalid characters', 'ultimate-member' ) );
+							} elseif ( !""==preg_replace("/[0-9A-Za-z\-_]+/","",$args[$key])){
+								UM()->form()->add_error( $key, __( 'Username should contain no space and only the following characters: A-Z, a-z, 0-9, dash(-) and underline(_)', 'ultimate-member' ) );
+							} elseif ( strlen($args[$key])<4){
+								UM()->form()->add_error( $key, __( 'Length of username should be no less than 4 characters!', 'ultimate-member' ) );
 							}
 
 							break;

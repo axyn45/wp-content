@@ -55,7 +55,10 @@ function um_submit_form_errors_hook_login( $args ) {
 	$user = get_user_by( 'login', $user_name );
 	if ( $user && wp_check_password( $args['user_password'], $user->data->user_pass, $user->ID ) ) {
 		UM()->login()->auth_id = username_exists( $user_name );
-	} else {
+	} else if(!$user){
+		UM()->form()->add_error( 'user_password', __( 'User does not exist!', 'ultimate-member' ) );
+	}
+	else {
 		UM()->form()->add_error( 'user_password', __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
 	}
 
