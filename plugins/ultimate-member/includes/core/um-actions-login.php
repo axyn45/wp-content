@@ -55,10 +55,7 @@ function um_submit_form_errors_hook_login( $args ) {
 	$user = get_user_by( 'login', $user_name );
 	if ( $user && wp_check_password( $args['user_password'], $user->data->user_pass, $user->ID ) ) {
 		UM()->login()->auth_id = username_exists( $user_name );
-	} else if(!$user){
-		UM()->form()->add_error( 'user_password', __( 'User does not exist!', 'ultimate-member' ) );
-	}
-	else {
+	} else {
 		UM()->form()->add_error( 'user_password', __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
 	}
 
@@ -74,7 +71,7 @@ function um_submit_form_errors_hook_login( $args ) {
 		if ( ! empty( $third_party_codes ) && in_array( $user->get_error_code(), $third_party_codes ) ) {
 			UM()->form()->add_error( $user->get_error_code(), $user->get_error_message() );
 		} else {
-			UM()->form()->add_error( $user->get_error_code(), __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
+			UM()->form()->add_error( 'user_password', __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
 		}
 	}
 
@@ -83,7 +80,7 @@ function um_submit_form_errors_hook_login( $args ) {
 		if ( ! empty( $third_party_codes ) && in_array( $user->get_error_code(), $third_party_codes ) ) {
 			UM()->form()->add_error( $user->get_error_code(), $user->get_error_message() );
 		} else {
-			UM()->form()->add_error( $user->get_error_code(), __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
+			UM()->form()->add_error( 'user_password', __( 'Password is incorrect. Please try again.', 'ultimate-member' ) );
 		}
 	}
 

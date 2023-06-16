@@ -671,10 +671,10 @@ function um_get_snippet( $str, $wordCount = 10 ) {
 
 /**
  * Format submitted data for Info preview & Email template
- * @param  boolean $style 
+ * @param  boolean $style
  * @return string
  *
- * @since  2.1.4 
+ * @since  2.1.4
  */
 function um_user_submitted_registration_formatted( $style = false ) {
 	$output = null;
@@ -839,7 +839,7 @@ function um_user_submitted_registration_formatted( $style = false ) {
  * @param  boolean $style
  * @return string
  *
- * @since  2.1.4 
+ * @since  2.1.4
  */
 function um_user_submited_display( $k, $title, $data = array(), $style = true ) {
 	$output = '';
@@ -1142,8 +1142,8 @@ function um_is_file_owner( $url, $user_id = null, $image_path = false ) {
 
 /**
  * Check if file is temporary
- * @param  string $filename 
- * @return bool       
+ * @param  string $filename
+ * @return bool
  */
 function um_is_temp_file( $filename ) {
 	$user_basedir = UM()->uploader()->get_upload_user_base_dir( 'temp' );
@@ -1515,10 +1515,10 @@ function um_can_view_field( $data ) {
 		UM()->fields()->set_mode = '';
 	}
 
-	if ( isset( $data['public'] ) && UM()->fields()->set_mode != 'register' ) {
+	if ( isset( $data['public'] ) && 'register' !== UM()->fields()->set_mode ) {
 
-		$can_edit = false;
-		$current_user_roles = [];
+		$can_edit           = false;
+		$current_user_roles = array();
 		if ( is_user_logged_in() ) {
 
 			$can_edit = UM()->roles()->um_current_user_can( 'edit', um_user( 'ID' ) );
@@ -1563,7 +1563,6 @@ function um_can_view_field( $data ) {
 				$can_view = apply_filters( 'um_can_view_field_custom', $can_view, $data );
 				break;
 		}
-
 	}
 
 	return apply_filters( 'um_can_view_field', $can_view, $data );
@@ -2503,7 +2502,7 @@ function um_user( $data, $attrs = null ) {
 		case 'profile_photo':
 			$data = um_get_user_avatar_data( um_user( 'ID' ), $attrs );
 
-			return sprintf( '<img src="%s" class="%s" width="%s" height="%s" alt="%s" data-default="%s" onerror="%s" />',
+			return sprintf( '<img src="%s" class="%s" width="%s" height="%s" alt="%s" data-default="%s" onerror="%s" loading="lazy" />',
 				esc_attr( $data['url'] ),
 				esc_attr( $data['class'] ),
 				esc_attr( $data['size'] ),
@@ -2553,7 +2552,7 @@ function um_user( $data, $attrs = null ) {
 
 			$alt = um_profile( 'nickname' );
 
-			$cover_html = $cover_uri ? '<img src="' . esc_attr( $cover_uri ) . '" alt="' . esc_attr( $alt ) . '" />' : '';
+			$cover_html = $cover_uri ? '<img src="' . esc_attr( $cover_uri ) . '" alt="' . esc_attr( $alt ) . '" loading="lazy" />' : '';
 
 			$cover_html = apply_filters( 'um_user_cover_photo_html__filter', $cover_html, $cover_uri, $alt, $is_default, $attrs );
 			return $cover_html;

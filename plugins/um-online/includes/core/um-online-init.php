@@ -1,39 +1,44 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit;
-
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 /**
  * Class UM_Online
  */
 class UM_Online {
 
+	/**
+	 * For backward compatibility with 1.3.x and PHP8.2 compatibility.
+	 *
+	 * @var bool
+	 */
+	public $plugin_inactive = false;
 
 	/**
 	 * @var array
 	 */
-	var $users;
-
+	public $users;
 
 	/**
 	 * @var
 	 */
 	private static $instance;
 
-
 	/**
 	 * @return UM_Online
 	 */
-	static public function instance() {
+	public static function instance() {
 		if ( is_null( self::$instance ) ) {
 			self::$instance = new self();
 		}
 		return self::$instance;
 	}
 
-
 	/**
 	 * UM_Online constructor.
 	 */
-	function __construct() {
+	public function __construct() {
 		// Global for backwards compatibility.
 		add_filter( 'um_call_object_Online', array( &$this, 'get_this' ) );
 
@@ -50,80 +55,72 @@ class UM_Online {
 		add_action( 'widgets_init', array( &$this, 'widgets_init' ) );
 	}
 
-
 	/**
 	 * For using UM()->Online() function in plugin
 	 *
 	 * @return $this
 	 */
-	function get_this() {
+	public function get_this() {
 		return $this;
 	}
-
 
 	/**
 	 * Init variables
 	 */
-	function init() {
+	public function init() {
 		$this->users = get_option( 'um_online_users' );
 		$this->schedule_update();
 	}
 
-
 	/**
 	 * @return um_ext\um_online\core\Online_Common()
 	 */
-	function common() {
+	public function common() {
 		if ( empty( UM()->classes['um_online_common'] ) ) {
 			UM()->classes['um_online_common'] = new um_ext\um_online\core\Online_Common();
 		}
 		return UM()->classes['um_online_common'];
 	}
 
-
 	/**
 	 * @return um_ext\um_online\core\Online_Shortcode()
 	 */
-	function shortcode() {
+	public function shortcode() {
 		if ( empty( UM()->classes['um_online_shortcode'] ) ) {
 			UM()->classes['um_online_shortcode'] = new um_ext\um_online\core\Online_Shortcode();
 		}
 		return UM()->classes['um_online_shortcode'];
 	}
 
-
 	/**
 	 * @return um_ext\um_online\core\Online_Member_Directory()
 	 */
-	function member_directory() {
+	public function member_directory() {
 		if ( empty( UM()->classes['um_online_member_directory'] ) ) {
 			UM()->classes['um_online_member_directory'] = new um_ext\um_online\core\Online_Member_Directory();
 		}
 		return UM()->classes['um_online_member_directory'];
 	}
 
-
 	/**
 	 * Init Online users widget
 	 */
-	function widgets_init() {
+	public function widgets_init() {
 		register_widget( 'um_online_users' );
 	}
-
 
 	/**
 	 * Gets users online
 	 *
 	 * @return bool|array
 	 */
-	function get_users() {
+	public function get_users() {
 		if ( ! empty( $this->users ) && is_array( $this->users ) ) {
 			arsort( $this->users ); // this will get us the last active user first
 			return $this->users;
 		}
 		return false;
 	}
-
 
 	/**
 	 * Checks if user is online
@@ -132,10 +129,9 @@ class UM_Online {
 	 *
 	 * @return bool
 	 */
-	function is_online( $user_id ) {
+	public function is_online( $user_id ) {
 		return isset( $this->users[ $user_id ] );
 	}
-
 
 	/**
 	 * Update the online users
@@ -151,24 +147,23 @@ class UM_Online {
 
 		// We have to check if each user was last seen in the previous x
 		if ( is_array( $this->users ) ) {
-			foreach( $this->users as $user_id => $last_seen ) {
+			foreach ( $this->users as $user_id => $last_seen ) {
 				if ( ( current_time('timestamp') - $last_seen ) > ( 60 * $minute_interval ) ) {
 					// Time now is more than x since he was last seen
 					// Remove user from online list
 					unset( $this->users[ $user_id ] );
 				}
 			}
-			update_option('um_online_users', $this->users );
+			update_option( 'um_online_users', $this->users );
 		}
 
 		update_option( 'um_online_users_last_updated', time() );
 	}
 
-
 	/**
 	 * Enqueue necessary scripts
 	 */
-	function enqueue_scripts() {
+	public function enqueue_scripts() {
 		wp_enqueue_script( 'um-online' );
 		wp_enqueue_style( 'um-online' );
 	}

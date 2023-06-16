@@ -5,11 +5,16 @@
  *
  * Caller: method Online_Shortcode->ultimatemember_online()
  * Shortcode: [ultimatemember_online]
+ * @version 2.1.6
  *
  * This template can be overridden by copying it to yourtheme/ultimate-member/um-online/online.php
+ * @var array  $online
+ * @var int    $max
+ * @var string $roles
  */
-
-if ( ! defined( 'ABSPATH' ) ) exit; ?>
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} ?>
 
 <div class="um-online" data-max="<?php echo $max; ?>">
 

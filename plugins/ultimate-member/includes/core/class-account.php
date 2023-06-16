@@ -472,7 +472,7 @@ if ( ! class_exists( 'um\core\Account' ) ) {
 		 */
 		function tab_link( $id ) {
 
-			if ( get_option( 'permalink_structure' ) ) {
+			if ( UM()->is_permalinks ) {
 
 				$url = trailingslashit( untrailingslashit( um_get_core_page( 'account' ) ) );
 				$url = $url . $id . '/';
@@ -626,6 +626,9 @@ if ( ! class_exists( 'um\core\Account' ) ) {
 					$this->init_displayed_fields( $fields, $id );
 
 					foreach ( $fields as $key => $data ) {
+						if ( isset( $shortcode_args['is_block'] ) && 1 === (int) $shortcode_args['is_block'] ) {
+							$data['is_block'] = 1;
+						}
 						$output .= UM()->fields()->edit_field( $key, $data );
 					}
 					break;
@@ -666,6 +669,9 @@ if ( ! class_exists( 'um\core\Account' ) ) {
 					$this->init_displayed_fields( $fields, $id );
 
 					foreach ( $fields as $key => $data ) {
+						if ( isset( $shortcode_args['is_block'] ) && 1 === (int) $shortcode_args['is_block'] ) {
+							$data['is_block'] = 1;
+						}
 						$output .= UM()->fields()->edit_field( $key, $data );
 					}
 
@@ -720,6 +726,9 @@ if ( ! class_exists( 'um\core\Account' ) ) {
 					$this->init_displayed_fields( $fields, $id );
 
 					foreach ( $fields as $key => $data ) {
+						if ( isset( $shortcode_args['is_block'] ) && 1 === (int) $shortcode_args['is_block'] ) {
+							$data['is_block'] = 1;
+						}
 						$output .= UM()->fields()->edit_field( $key, $data );
 					}
 
@@ -758,6 +767,9 @@ if ( ! class_exists( 'um\core\Account' ) ) {
 					$this->init_displayed_fields( $fields, $id );
 
 					foreach ( $fields as $key => $data ) {
+						if ( isset( $shortcode_args['is_block'] ) && 1 === (int) $shortcode_args['is_block'] ) {
+							$data['is_block'] = 1;
+						}
 						$output .= UM()->fields()->edit_field( $key, $data );
 					}
 

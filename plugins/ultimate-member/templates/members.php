@@ -1,4 +1,18 @@
-<?php if ( ! defined( 'ABSPATH' ) ) exit;
+<?php
+/**
+ * Template for the members directory
+ *
+ * This template can be overridden by copying it to yourtheme/ultimate-member/members.php
+ *
+ * Page: "Members"
+ *
+ * @version 2.6.3
+ *
+ * @var array $args
+ */
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 global $post;
 
@@ -125,6 +139,14 @@ if ( ! empty( $search_filters ) ) {
 	$search_filters = array_values( $search_filters );
 }
 
+// Hide filter fields based on the field visibility.
+foreach ( $search_filters as $key => $filter ) {
+	$filter_data = UM()->fields()->get_field( $filter );
+	if ( ! um_can_view_field( $filter_data ) ) {
+		unset( $search_filters[ $key ] );
+	}
+}
+
 // Classes
 $classes = '';
 if ( $search && $show_search ) {
@@ -208,10 +230,13 @@ if ( ( ( $search && $show_search ) || ( $filters && $show_filters && count( $sea
 			}
 		}
 	}
-} ?>
+}
+
+$postid = ! empty( $post->ID ) ? $post->ID : '';
+?>
 
 <div class="um <?php echo esc_attr( $this->get_class( $mode ) ); ?> um-<?php echo esc_attr( substr( md5( $form_id ), 10, 5 ) ); ?>"
-     data-hash="<?php echo esc_attr( substr( md5( $form_id ), 10, 5 ) ) ?>" data-base-post="<?php echo esc_attr( $post->ID ) ?>"
+     data-hash="<?php echo esc_attr( substr( md5( $form_id ), 10, 5 ) ) ?>" data-base-post="<?php echo esc_attr( $postid ) ?>"
 	 data-must-search="<?php echo esc_attr( $must_search ); ?>" data-searched="<?php echo $not_searched ? '0' : '1'; ?>"
 	 data-view_type="<?php echo esc_attr( $current_view ) ?>" data-page="<?php echo esc_attr( $current_page ) ?>"
 	 data-sorting="<?php echo esc_attr( $sort_from_url ) ?>">

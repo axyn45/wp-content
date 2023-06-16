@@ -715,6 +715,12 @@ function um_submit_form_errors_hook_( $args ) {
 							}
 							break;
 
+						case 'spotify_url':
+							if ( ! UM()->validation()->is_url( $args[ $key ], 'open.spotify.com' ) ) {
+								UM()->form()->add_error( $key, sprintf( __( 'Please enter a valid %s URL', 'ultimate-member' ), $array['label'] ) );
+							}
+							break;
+
 						case 'telegram_url':
 							if ( ! UM()->validation()->is_url( $args[ $key ], 't.me' ) ) {
 								UM()->form()->add_error( $key, sprintf( __( 'Please enter a valid %s username or profile URL', 'ultimate-member' ), $array['label'] ) );
@@ -790,15 +796,11 @@ function um_submit_form_errors_hook_( $args ) {
 							if ( $args[ $key ] == '' ) {
 								UM()->form()->add_error( $key, __( 'You must provide a username', 'ultimate-member' ) );
 							} elseif ( $mode == 'register' && username_exists( sanitize_user( $args[ $key ] ) ) ) {
-								UM()->form()->add_error( $key, __( 'The username you entered is already taken!', 'ultimate-member' ) );
+								UM()->form()->add_error( $key, __( 'The username you entered is incorrect', 'ultimate-member' ) );
 							} elseif ( is_email( $args[ $key ] ) ) {
 								UM()->form()->add_error( $key, __( 'Username cannot be an email', 'ultimate-member' ) );
 							} elseif ( ! UM()->validation()->safe_username( $args[ $key ] ) ) {
 								UM()->form()->add_error( $key, __( 'Your username contains invalid characters', 'ultimate-member' ) );
-							} elseif ( !""==preg_replace("/[0-9A-Za-z\-_]+/","",$args[$key])){
-								UM()->form()->add_error( $key, __( 'Username should contain no space and only the following characters: A-Z, a-z, 0-9, dash(-) and underline(_)', 'ultimate-member' ) );
-							} elseif ( strlen($args[$key])<4){
-								UM()->form()->add_error( $key, __( 'Length of username should be no less than 4 characters!', 'ultimate-member' ) );
 							}
 
 							break;
@@ -839,21 +841,8 @@ function um_submit_form_errors_hook_( $args ) {
 									UM()->form()->add_error( $key, __( 'The email you entered is incorrect', 'ultimate-member') );
 								} elseif ( ! UM()->validation()->safe_username( $args[ $key ] ) ) {
 									UM()->form()->add_error( $key,  __( 'Your email contains invalid characters', 'ultimate-member' ) );
-								} else{
-									$valid_email_domains = array("@gmail.com", "@outlook.com","@qq.com","@126.com","@163.com","@okkk.cc"); // 允许注册的邮箱信息
-									$valid = false;
-									foreach ($valid_email_domains as $d) {
-										$d_len = strlen($d);
-										$current_email_domain = strtolower(substr($args[$key], - ($d_len), $d_len));
-										if ($current_email_domain == strtolower($d)) {
-											$valid = true;
-											break;
-										}
-									}
-									if (!$valid) {
-										UM()->form()->add_error( $key,  __( 'We only accept following email domains for registration: gmail.com, outlook.com, live.com, qq.com, 126.com, 163.com and okkk.cc', 'ultimate-member' ) );
-									}
 								}
+
 							} else {
 
 								if ( $args[ $key ] != '' && ! is_email( $args[ $key ] ) ) {

@@ -636,7 +636,10 @@ function um_run_search( directory ) {
 	um_ajax_get_members( directory );
 }
 
-function initMembers(){
+
+jQuery(document.body).ready( function() {
+
+
 	jQuery( '.um-directory .um-search-filter select' ).each( function() {
 		if ( jQuery(this).find('option:not(:disabled)').length === 1 ) {
 			jQuery(this).prop('disabled', true);
@@ -1784,5 +1787,5 @@ function initMembers(){
 			}
 		});
 	});
-}
-jQuery(document.body).ready( initMembers());
+
+});

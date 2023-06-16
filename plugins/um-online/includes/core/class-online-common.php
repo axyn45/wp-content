@@ -39,6 +39,9 @@ class Online_Common {
 		add_filter( 'um_friends_online_users', array( $this, 'get_online_users' ) );
 
 		add_filter( 'um_settings_structure', array( $this, 'admin_settings' ), 10, 1 );
+
+		add_filter( 'um_override_templates_get_template_path__um-online', array( $this, 'um_online_get_path_template' ), 10, 2 );
+		add_filter( 'um_override_templates_scan_files', array( $this, 'um_online_extend_scan_files' ), 10, 1 );
 	}
 
 
@@ -318,5 +321,40 @@ class Online_Common {
 		}
 
 		return $online_user_ids;
+	}
+
+
+	/**
+	 * Scan templates from extension
+	 *
+	 * @param $scan_files
+	 *
+	 * @return array
+	 */
+	function um_online_extend_scan_files( $scan_files ) {
+		$extension_files['um-online'] = UM()->admin_settings()->scan_template_files( um_online_path . '/templates/' );
+		$scan_files                   = array_merge( $scan_files, $extension_files );
+
+		return $scan_files;
+	}
+
+
+	/**
+	 * Get template paths
+	 *
+	 * @param $located
+	 * @param $file
+	 *
+	 * @return array
+	 */
+	function um_online_get_path_template( $located, $file ) {
+		if ( file_exists( get_stylesheet_directory() . '/ultimate-member/um-online/' . $file ) ) {
+			$located = array(
+				'theme' => get_stylesheet_directory() . '/ultimate-member/um-online/' . $file,
+				'core'  => um_online_path . 'templates/' . $file,
+			);
+		}
+
+		return $located;
 	}
 }

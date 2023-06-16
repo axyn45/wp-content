@@ -3,7 +3,7 @@
 Plugin Name: Ultimate Member - Online
 Plugin URI: https://ultimatemember.com/extensions/online-users/
 Description: Display online users and show the user online status on your site.
-Version: 2.1.5
+Version: 2.1.6
 Author: Ultimate Member
 Author URI: http://ultimatemember.com/
 Text Domain: um-online
@@ -11,9 +11,11 @@ Domain Path: /languages
 UM version: 2.1.0
 */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
-require_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 $plugin_data = get_plugin_data( __FILE__ );
 
@@ -47,6 +49,7 @@ if ( ! function_exists( 'um_online_check_dependencies' ) ) {
 		if ( ! defined( 'um_path' ) || ! file_exists( um_path  . 'includes/class-dependencies.php' ) ) {
 			//UM is not installed
 			function um_online_dependencies() {
+				// translators: %s is the Online extension name.
 				echo '<div class="error"><p>' . sprintf( __( 'The <strong>%s</strong> extension requires the Ultimate Member plugin to be activated to work properly. You can download it <a href="https://wordpress.org/plugins/ultimate-member">here</a>', 'um-online' ), um_online_extension ) . '</p></div>';
 			}
 
@@ -63,6 +66,7 @@ if ( ! function_exists( 'um_online_check_dependencies' ) ) {
 			if ( ! $is_um_active ) {
 				//UM is not active
 				function um_online_dependencies() {
+					// translators: %s is the Online extension name.
 					echo '<div class="error"><p>' . sprintf( __( 'The <strong>%s</strong> extension requires the Ultimate Member plugin to be activated to work properly. You can download it <a href="https://wordpress.org/plugins/ultimate-member">here</a>', 'um-online' ), um_online_extension ) . '</p></div>';
 				}
 

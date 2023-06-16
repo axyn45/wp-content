@@ -1,11 +1,11 @@
 <?php
 namespace um\core;
 
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 if ( ! class_exists( 'um\core\Builtin' ) ) {
-
 
 	/**
 	 * Class Builtin
@@ -13,29 +13,40 @@ if ( ! class_exists( 'um\core\Builtin' ) ) {
 	 */
 	class Builtin {
 
-
 		/**
 		 * @var array
 		 */
 		public $predefined_fields = array();
 
+		/**
+		 * @var array
+		 */
+		public $all_user_fields = array();
 
 		/**
 		 * @var array
 		 */
-		var $all_user_fields = array();
-
+		public $core_fields = array();
 
 		/**
 		 * @var array
 		 */
-		var $core_fields = array();
+		public $saved_fields = array();
 
+		/**
+		 * @var array
+		 */
+		public $custom_fields = array();
+
+		/**
+		 * @var array
+		 */
+		public $fields_dropdown = array();
 
 		/**
 		 * Builtin constructor.
 		 */
-		function __construct() {
+		public function __construct() {
 			add_action( 'init', array( &$this, 'set_core_fields' ), 1 );
 			add_action( 'init', array( &$this, 'set_predefined_fields' ), 1 );
 			add_action( 'init', array( &$this, 'set_custom_fields' ), 1 );
@@ -616,12 +627,27 @@ if ( ! class_exists( 'um\core\Builtin' ) ) {
 					'validate' => array(
 						'_title' => array(
 							'mode' => 'required',
-							'error' => __('You must provide a title','ultimate-member')
+							'error' => __( 'You must provide a title', 'ultimate-member' ),
 						),
 						'_metakey' => array(
 							'mode' => 'unique',
 						),
-					)
+					),
+				),
+				'spotify' => array(
+					'name'     => __( 'Spotify URL', 'ultimate-member' ),
+					'col1'     => array('_title','_metakey','_help','_visibility'),
+					'col2'     => array('_label','_placeholder','_public','_roles','_validate','_custom_validate'),
+					'col3'     => array('_required','_editable','_icon'),
+					'validate' => array(
+						'_title'   => array(
+							'mode'  => 'required',
+							'error' => __( 'You must provide a title', 'ultimate-member' ),
+						),
+						'_metakey' => array(
+							'mode' => 'unique',
+						),
+					),
 				),
 
 				/*'group' => array(
@@ -1486,6 +1512,7 @@ if ( ! class_exists( 'um\core\Builtin' ) ) {
 			$array['unique_username_or_email'] = __('Unique Username/E-mail','ultimate-member');
 			$array['url']                      = __('Website URL','ultimate-member');
 			$array['youtube_url']              = __('YouTube Profile','ultimate-member');
+			$array['spotify_url']              = __('Spotify URL','ultimate-member');
 			$array['telegram_url']             = __('Telegram URL','ultimate-member');
 			$array['discord']                  = __('Discord ID','ultimate-member');
 			$array['tiktok_url']               = __('TikTok URL','ultimate-member');
