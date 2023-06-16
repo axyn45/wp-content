@@ -113,6 +113,8 @@ jQuery( document ).ready(function() {
 				if ( jQuery('.um-profile').length ) {
 					jQuery('.um-profile-friends').html(response.friends);
 				}
+				bell_enabled-=1;
+				initBellButton()
 			},
 			error: function( e ) {
 				console.log( e );
@@ -164,8 +166,9 @@ jQuery( document ).ready(function() {
 						}
 					}
 				}
-
 				um_friends_ajax = false;
+				bell_enabled+=1;
+				initBellButton()
 			},
 			error: function( e ) {
 				console.log( e );

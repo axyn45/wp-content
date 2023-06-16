@@ -66,6 +66,8 @@ jQuery(document).ready(function() {
 
 				btn.replaceWith( response.btn );
 				um_followers_ajax = false;
+				bell_enabled+=1;
+				initBellButton()
 			},
 			error: function( e ) {
 				console.log( e );
@@ -100,6 +102,8 @@ jQuery(document).ready(function() {
 
 				btn.replaceWith( response.btn );
 				um_followers_ajax = false;
+				bell_enabled-=1;
+				initBellButton()
 			},
 			error: function( e ) {
 				console.log( e );

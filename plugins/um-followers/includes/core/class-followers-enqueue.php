@@ -26,7 +26,7 @@ class Followers_Enqueue {
 	 */
 	function wp_enqueue_scripts() {
 		$suffix = ( defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG || defined( 'UM_SCRIPT_DEBUG' ) ) ? '' : '.min';
-		wp_register_script( 'um_followers', um_followers_url . 'assets/js/um-followers' . $suffix . '.js', array( 'jquery', 'wp-util', 'um_scripts' ), um_followers_version, true );
+		wp_register_script( 'um_followers', um_followers_url . 'assets/js/um-followers' . $suffix . '.js', array( 'jquery', 'wp-util', 'um_scripts' ), um_followers_version.'a', true );
 		wp_register_style( 'um_followers', um_followers_url . 'assets/css/um-followers' . $suffix . '.css', array( 'um_fonticons_ii', 'um_fonticons_fa' ), um_followers_version );
 	}
 }
