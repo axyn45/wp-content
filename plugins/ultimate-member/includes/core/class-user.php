@@ -78,6 +78,8 @@ if ( ! class_exists( 'um\core\User' ) ) {
 		 */
 		public $target_id = null;
 
+		public $updating_process = false;
+
 		/**
 		 * User constructor.
 		 */
@@ -91,7 +93,7 @@ if ( ! class_exists( 'um\core\User' ) ) {
 				'dismissed_wp_pointers',
 				'session_tokens',
 				'screen_layout',
-				'wp_user-',
+				$wpdb->get_blog_prefix() . 'user-',
 				'dismissed',
 				'cap_key',
 				$wpdb->get_blog_prefix() . 'capabilities',
@@ -160,8 +162,53 @@ if ( ! class_exists( 'um\core\User' ) ) {
 			add_action( 'update_user_meta', array( &$this, 'flush_um_count_users_transient_update' ), 10, 4 );
 			add_action( 'added_user_meta', array( &$this, 'flush_um_count_users_transient_add' ), 10, 4 );
 			add_action( 'delete_user_meta', array( &$this, 'flush_um_count_users_transient_delete' ), 10, 4 );
+
+			add_action( 'update_user_metadata', array( &$this, 'avoid_banned_keys' ), 10, 3 );
 		}
 
+		/**
+		 * It validates the meta_key for wp_usermeta table.
+		 * Avoid to handle `meta_key` by the UM Forms if it contains $this->banned_keys inside.
+		 *
+		 * @since 2.6.5
+		 *
+		 * @param string $meta_key Usermeta key.
+		 * @return bool
+		 */
+		public function is_metakey_banned( $meta_key ) {
+			$is_banned = false;
+			foreach ( $this->banned_keys as $ban ) {
+				if ( is_numeric( $meta_key ) || false !== stripos( $meta_key, $ban ) ) {
+					$is_banned = true;
+					break;
+				}
+			}
+
+			return $is_banned;
+		}
+
+		/**
+		 * Low-level checking to avoid updating banned user metakeys while UM Forms submission.
+		 *
+		 * @since 2.6.4
+		 *
+		 * @param null|bool $check      Whether to allow updating metadata for the given type.
+		 * @param int       $object_id  ID of the object metadata is for.
+		 * @param string    $meta_key   Metadata key.
+		 *
+		 * @return null|bool
+		 */
+		public function avoid_banned_keys( $check, $object_id, $meta_key ) {
+			if ( false === $this->updating_process ) {
+				return $check;
+			}
+
+			if ( $this->is_metakey_banned( $meta_key ) ) {
+				$check = false;
+			}
+
+			return $check;
+		}
 
 		/**
 		 * @param $meta_ids
@@ -1275,20 +1322,16 @@ if ( ! class_exists( 'um\core\User' ) ) {
 			$this->set(0, $clean);
 		}
 
-
 		/**
-		 * Clean user profile
+		 * Clean user profile before set.
 		 */
-		function clean() {
+		private function clean() {
 			foreach ( $this->profile as $key => $value ) {
-				foreach ( $this->banned_keys as $ban ) {
-					if ( strstr( $key, $ban ) || is_numeric( $key ) ) {
-						unset( $this->profile[ $key ] );
-					}
+				if ( $this->is_metakey_banned( $key ) ) {
+					unset( $this->profile[ $key ] );
 				}
 			}
 		}
-
 
 		/**
 		 * This method lets you auto sign-in a user to your site.
@@ -2104,56 +2147,52 @@ if ( ! class_exists( 'um\core\User' ) ) {
 			um_deprecated_function( 'update_files', '2.1.0', '' );
 		}
 
-
 		/**
 		 * Update profile
 		 *
 		 * @param $changes
 		 */
-		function update_profile( $changes ) {
-
-			$args['ID'] = $this->id;
+		public function update_profile( $changes ) {
+			$this->updating_process = true;
+			$args['ID']             = $this->id;
 
 			/**
-			 * UM hook
+			 * Filters the update profile changes data.
 			 *
-			 * @type filter
-			 * @title um_before_update_profile
-			 * @description Change update profile changes data
-			 * @input_vars
-			 * [{"var":"$changes","type":"array","desc":"User Profile Changes"},
-			 * {"var":"$user_id","type":"int","desc":"User ID"}]
-			 * @change_log
-			 * ["Since: 2.0"]
-			 * @usage
-			 * <?php add_filter( 'um_before_update_profile', 'function_name', 10, 2 ); ?>
-			 * @example
-			 * <?php
-			 * add_filter( 'um_before_update_profile', 'my_before_update_profile', 10, 2 );
-			 * function my_before_update_profile( $changes, $user_id ) {
-			 *     // your code here
+			 * @since 1.3.x
+			 * @hook um_before_update_profile
+			 *
+			 * @param {array} $changes User Profile Changes.
+			 * @param {int}   $user_id User ID.
+			 *
+			 * @return {array} User Profile Changes.
+			 *
+			 * @example <caption>Remove some_metakey from changes where user ID equals 12.</caption>
+			 * function my_custom_before_update_profile( $changes, $user_id ) {
+			 *     if ( 12 === $user_id ) {
+			 *         unset( $changes['{some_metakey}'];
+			 *     }
 			 *     return $changes;
 			 * }
-			 * ?>
+			 * add_filter( 'um_before_update_profile', 'my_custom_before_update_profile', 10, 2 );
 			 */
 			$changes = apply_filters( 'um_before_update_profile', $changes, $args['ID'] );
 
 			foreach ( $changes as $key => $value ) {
-				if ( in_array( $key, $this->banned_keys ) ) {
+				if ( $this->is_metakey_banned( $key ) ) {
 					continue;
 				}
 
-				if ( ! in_array( $key, $this->update_user_keys ) ) {
+				if ( ! in_array( $key, $this->update_user_keys, true ) ) {
 					if ( $value === 0 ) {
 						update_user_meta( $this->id, $key, '0' );
 					} else {
 						update_user_meta( $this->id, $key, $value );
 					}
 				} else {
-					$args[ $key ] = $changes[ $key ];
+					$args[ $key ] = $value;
 				}
 			}
-
 
 			// update user
 			if ( count( $args ) > 1 ) {
@@ -2162,14 +2201,14 @@ if ( ! class_exists( 'um\core\User' ) ) {
 					global $wp_roles;
 
 					$exclude_roles = array_diff( array_keys( $wp_roles->roles ), UM()->roles()->get_editable_user_roles() );
-					if ( in_array( $args['role'], $exclude_roles ) ) {
+					if ( in_array( $args['role'], $exclude_roles, true ) ) {
 						unset( $args['role'] );
 					}
 				}
 
 				wp_update_user( $args );
 			}
-
+			$this->updating_process = false;
 		}
 
 
